@@ -38,7 +38,12 @@ namespace Health
         
         private void SetHealthBar()
         {
-            healthSlider.localScale = new Vector3(_healthController.Health / (float)_healthController.MaxHealth, 1, 1);
+            healthSlider.localScale = new Vector3
+            (
+                _healthController.Health / (float)_healthController.MaxHealth,
+                1,
+                1
+            );
         }
     }
 }

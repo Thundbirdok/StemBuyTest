@@ -40,8 +40,8 @@ namespace Player
         [SerializeField]
         private FireController fireController;
         
-        [SerializeField]
-        private HealthController healthController;
+        [field: SerializeField]
+        public HealthController HealthController { get; private set; }
 
         [SerializeField]
         private HealthSpriteRendererView healthView;
@@ -56,9 +56,9 @@ namespace Player
             base.OnNetworkSpawn();
             
             colorController.Paint(IsOwner);
-            healthController.Enable();
+            HealthController.Enable();
             
-            healthView.Initialize(healthController);
+            healthView.Initialize(HealthController);
             healthView.Enable();
             
             if (IsOwner == false)
@@ -81,7 +81,7 @@ namespace Player
         {
             base.OnNetworkDespawn();
 
-            healthController.Disable();
+            HealthController.Disable();
             healthView.Disable();
             
             if (IsOwner  == false)
@@ -104,7 +104,7 @@ namespace Player
 
         public void TakeDamage(int damage)
         {
-            healthController.TakeDamage(damage);
+            HealthController.TakeDamage(damage);
         }
         
         private void UpdateMoveInput() => moveController.UpdateInput(_inputHandler.MoveInput);

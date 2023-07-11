@@ -179,12 +179,11 @@ MonoBehaviour:
     playerRigidbody: {fileID: 2750356387565749401}
     speed: 7.5
   fireController:
-    networkOwner: {fileID: 901903052235789942}
     playerCollider: {fileID: 2750356387565749402}
     firePosition: {fileID: 6227365817289561654}
     projectilePrefab: {fileID: 2047097986660538136, guid: 8582183e4b4dd384193df14fa178573b, type: 3}
     timeBetweenShots: 0.25
-  healthController:
+  <HealthController>k__BackingField:
     <MaxHealth>k__BackingField: 100
   healthView:
     healthBarHandler: {fileID: 8724700955733094299}
