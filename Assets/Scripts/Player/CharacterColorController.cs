@@ -10,11 +10,20 @@ namespace Player
         private SpriteRenderer body;
         
         [SerializeField]
+        private SpriteRenderer healthBar;
+        
+        [SerializeField]
         private Color ownedColor;
         
         [SerializeField]
         private Color unownedColor;
 
-        public void Paint(bool isOwner) => body.color = isOwner ? ownedColor : unownedColor;
+        public void Paint(bool isOwner)
+        {
+            var color = isOwner ? ownedColor : unownedColor;
+            
+            body.color = color;
+            healthBar.color = color;
+        }
     }
 }

@@ -9,15 +9,19 @@ namespace Player
         private PlayerMoveController moveController;
 
         [SerializeField]
+        private HealthController healthController;
+        
+        [SerializeField]
         private CharacterColorController colorController;
         
         private InputHandler _inputHandler;
-        
+
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
 
             colorController.Paint(IsOwner);
+            healthController.Enable();
             
             if (IsOwner == false)
             {
@@ -37,6 +41,8 @@ namespace Player
         {
             base.OnNetworkDespawn();
 
+            healthController.Disable();
+            
             if (IsOwner  == false)
             {
                 return;
