@@ -27,6 +27,10 @@ namespace Coin
         [SerializeField]
         private Vector2 offset;
 
+        [SerializeField]
+        private int playersToStart = 2;
+
+        private int _playersAmount;
         private Coroutine _spawnCoroutine;
         
         private void Start()
@@ -52,8 +56,23 @@ namespace Coin
 
         private void OnPlayerConnected(ulong _)
         {
-            NetworkObjectPool.Singleton.NetworkObject.Spawn();
-            
+            if (NetworkManager.Singleton.IsServer == false)
+            {
+                return;
+            }
+
+            _playersAmount++;
+
+            if (_playersAmount < playersToStart)
+            {
+                return;
+            }
+
+            if (NetworkObjectPool.Singleton.NetworkObject.IsSpawned == false)
+            {
+                NetworkObjectPool.Singleton.NetworkObject.Spawn();
+            }
+
             SpawnCoins();
         }
 

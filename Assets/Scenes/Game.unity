@@ -724,6 +724,7 @@ MonoBehaviour:
   leftBottomCorner: {fileID: 606801345}
   rightTopCorner: {fileID: 2040807196}
   offset: {x: 1, y: 1}
+  playersToStart: 2
 --- !u!4 &906400625
 Transform:
   m_ObjectHideFlags: 0
