@@ -1,13 +1,11 @@
 namespace Projectile
 {
-    using Player;
+    using Health;
     using Unity.Netcode;
     using UnityEngine;
 
     public class Projectile : NetworkBehaviour
     {
-        public NetworkBehaviour NetworkOwner { get; private set; }
-        
         [SerializeField]
         private int damage = 20;
         
@@ -30,21 +28,25 @@ namespace Projectile
 
         private void OnCollisionEnter2D(Collision2D other)
         {
-            if (other.collider.TryGetComponent(out PlayerCharacterController player))
+            if (other.collider.TryGetComponent(out ITakeDamage takeDamage))
             {
-                player.TakeDamage(damage);
+                takeDamage.TakeDamage(damage);
             }
 
             if (other.collider.TryGetComponent(out IStopProjectile _))
             {
-                Destroy(gameObject);
+                NetworkObject.Despawn();
             }
         }
 
-        public void Initialize(NetworkBehaviour networkOwner, Vector2 direction)
+        public void Initialize(Vector2 direction) 
         {
-            NetworkOwner = networkOwner;
             _direction = direction;
+
+            if (NetworkManager.Singleton.IsServer)
+            {
+                NetworkObject.Spawn();
+            }
         }
     }
 }

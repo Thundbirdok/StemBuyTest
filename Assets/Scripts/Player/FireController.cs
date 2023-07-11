@@ -2,16 +2,12 @@ namespace Player
 {
     using System;
     using Projectile;
-    using Unity.Netcode;
     using UnityEngine;
     using Object = UnityEngine.Object;
 
     [Serializable]
     public class FireController
     {
-        [SerializeField]
-        private NetworkBehaviour networkOwner;
-        
         [SerializeField]
         private Collider2D playerCollider;
 
@@ -39,7 +35,7 @@ namespace Player
                 return;
             }
             
-            time = 0;
+            _time = 0;
 
             if (_isFire == false)
             {
@@ -51,7 +47,7 @@ namespace Player
             projectile.transform.position = firePosition.position;
             Physics2D.IgnoreCollision(playerCollider, projectile.GetComponent<Collider2D>());
                 
-            projectile.Initialize(networkOwner, direction);
+            projectile.Initialize(direction);
 
             _time = timeBetweenShots;
         }

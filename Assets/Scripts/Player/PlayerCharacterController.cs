@@ -7,6 +7,8 @@ namespace Player
 
     public class PlayerCharacterController : NetworkBehaviour, ITakeDamage, IStopProjectile
     {
+        public ushort Coins { get; private set; }
+        
         [SerializeField]
         private PlayerMoveController moveController;
 
@@ -80,5 +82,10 @@ namespace Player
         private void UpdateMoveInput() => moveController.UpdateInput(_inputHandler.MoveInput);
         
         private void UpdateFireInput() => fireController.UpdateFireInput(_inputHandler.IsFireInput);
+
+        public void AddCoin()
+        {
+            Coins += 1;
+        }
     }
 }
