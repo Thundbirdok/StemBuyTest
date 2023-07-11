@@ -1,5 +1,6 @@
 namespace Player
 {
+    using System;
     using Health;
     using Projectile;
     using Unity.Netcode;
@@ -7,7 +8,31 @@ namespace Player
 
     public class PlayerCharacterController : NetworkBehaviour, ITakeDamage, IStopProjectile
     {
-        public ushort Coins { get; private set; }
+        public static event Action OnPlayerSpawned;
+        public event Action OnCoinsChanged;
+
+        public static PlayerCharacterController Singleton;
+        
+        private ushort _coins;
+        public ushort Coins
+        {
+            get
+            {
+                return _coins;
+            }
+
+            private set
+            {
+                if (_coins == value)
+                {
+                    return;
+                }
+
+                _coins = value;
+                
+                OnCoinsChanged?.Invoke();
+            }
+        }
         
         [SerializeField]
         private PlayerMoveController moveController;
@@ -29,7 +54,7 @@ namespace Player
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
-
+            
             colorController.Paint(IsOwner);
             healthController.Enable();
             
@@ -40,6 +65,9 @@ namespace Player
             {
                 return;
             }
+
+            Singleton = this;   
+            OnPlayerSpawned?.Invoke();
             
             _inputHandler = new InputHandler();
             

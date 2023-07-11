@@ -1,9 +1,9 @@
 namespace Player
 {
     using System;
+    using Network;
     using Projectile;
     using UnityEngine;
-    using Object = UnityEngine.Object;
 
     [Serializable]
     public class FireController
@@ -42,14 +42,25 @@ namespace Player
                 return;
             }
 
-            var projectile = Object.Instantiate(projectilePrefab);
-
-            projectile.transform.position = firePosition.position;
-            Physics2D.IgnoreCollision(playerCollider, projectile.GetComponent<Collider2D>());
-                
-            projectile.Initialize(direction);
+            InstantiateProjectile(direction);
 
             _time = timeBetweenShots;
+        }
+        
+        private void InstantiateProjectile(Vector2 direction)
+        {
+            var networkObject = NetworkObjectPool.Singleton.GetNetworkObject
+            (
+                projectilePrefab.gameObject,
+                firePosition.position,
+                Quaternion.identity
+            );
+            
+            networkObject.Spawn(true);
+            
+            Physics2D.IgnoreCollision(playerCollider, networkObject.GetComponent<Collider2D>());
+
+            networkObject.GetComponent<Projectile>().Initialize(direction);
         }
     }
 }

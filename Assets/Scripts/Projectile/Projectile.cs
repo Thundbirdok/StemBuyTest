@@ -16,6 +16,8 @@ namespace Projectile
         private Rigidbody2D body;
 
         private Vector2 _direction;
+
+        private bool _isDestroyed;
         
         private void FixedUpdate()
         {
@@ -28,6 +30,11 @@ namespace Projectile
 
         private void OnCollisionEnter2D(Collision2D other)
         {
+            if (_isDestroyed)
+            {
+                return;
+            }
+            
             if (other.collider.TryGetComponent(out ITakeDamage takeDamage))
             {
                 takeDamage.TakeDamage(damage);
@@ -36,6 +43,8 @@ namespace Projectile
             if (other.collider.TryGetComponent(out IStopProjectile _))
             {
                 NetworkObject.Despawn();
+
+                _isDestroyed = true;
             }
         }
 
@@ -43,10 +52,7 @@ namespace Projectile
         {
             _direction = direction;
 
-            if (NetworkManager.Singleton.IsServer)
-            {
-                NetworkObject.Spawn();
-            }
+            _isDestroyed = false;
         }
     }
 }
