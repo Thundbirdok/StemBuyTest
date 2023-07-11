@@ -9,13 +9,7 @@ namespace Player
         private PlayerMoveController moveController;
 
         [SerializeField]
-        private SpriteRenderer body;
-        
-        [SerializeField]
-        private Color ownedColor;
-        
-        [SerializeField]
-        private Color unownedColor;
+        private CharacterColorController colorController;
         
         private InputHandler _inputHandler;
         
@@ -23,7 +17,7 @@ namespace Player
         {
             base.OnNetworkSpawn();
 
-            body.color = IsOwner ? ownedColor : unownedColor;
+            colorController.Paint(IsOwner);
             
             if (IsOwner == false)
             {

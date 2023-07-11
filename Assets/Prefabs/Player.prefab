@@ -143,10 +143,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveController:
     playerRigidbody: {fileID: 2750356387565749401}
-    speed: 5
-  body: {fileID: 4617403841067107976}
-  ownedColor: {r: 0.17254902, g: 0.4627451, b: 0.8980392, a: 1}
-  unownedColor: {r: 0.8396226, g: 0.122774996, b: 0.122774996, a: 1}
+    speed: 7.5
+  colorController:
+    body: {fileID: 0}
+    ownedColor: {r: 0.20392157, g: 0.59607846, b: 0.85882354, a: 1}
+    unownedColor: {r: 0.8490566, g: 0.16420433, b: 0.16420433, a: 1}
 --- !u!1 &2918836419671916445
 GameObject:
   m_ObjectHideFlags: 0
