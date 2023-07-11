@@ -7,29 +7,52 @@ namespace Player
     [Serializable]
     public class InputHandler
     {
-        public event Action OnInputChanged;
+        public event Action OnMoveInputChanged;
+        public event Action OnFireInputChanged;
+        
+        private Vector2 _moveInput;
 
-        private Vector2 _input;
-        public Vector2 Input
+        public Vector2 MoveInput
         {
             get
             {
-                return _input;
+                return _moveInput;
             }
 
             private set
             {
-                if (_input == value)
+                if (_moveInput == value)
                 {
                     return;
                 }
                 
-                _input = value;
+                _moveInput = value;
                 
-                OnInputChanged?.Invoke();
+                OnMoveInputChanged?.Invoke();
             }
         }
-        
+
+        private bool _isFireInput;
+        public bool IsFireInput
+        {
+            get
+            {
+                return _isFireInput;
+            }
+
+            private set
+            {
+                if (_isFireInput == value)
+                {
+                    return;
+                }
+
+                _isFireInput = value;
+                
+                OnFireInputChanged?.Invoke();
+            }
+        }
+
         private PlayerCharacterInputs.CharacterActions _actions;
 
         private bool _isInitialized;
@@ -70,21 +93,32 @@ namespace Player
 
         private void Subscribe()
         {
-            _actions.Move.started += MoveInput;
-            _actions.Move.performed += MoveInput;
-            _actions.Move.canceled += MoveInput;
+            _actions.Move.started += OnMoveInput;
+            _actions.Move.performed += OnMoveInput;
+            _actions.Move.canceled += OnMoveInput;
+            
+            _actions.Fire.started += OnFireInput;
+            _actions.Fire.canceled += OnFireInput;
         }
 
         private void Unsubscribe()
         {
-            _actions.Move.started -= MoveInput;
-            _actions.Move.performed -= MoveInput;
-            _actions.Move.canceled -= MoveInput;
+            _actions.Move.started -= OnMoveInput;
+            _actions.Move.performed -= OnMoveInput;
+            _actions.Move.canceled -= OnMoveInput;
+            
+            _actions.Fire.started -= OnFireInput;
+            _actions.Fire.canceled -= OnFireInput;
         }
 
-        private void MoveInput(InputAction.CallbackContext context)
+        private void OnMoveInput(InputAction.CallbackContext context)
         {
-            Input = context.ReadValue<Vector2>();
+            MoveInput = context.ReadValue<Vector2>();
+        }
+
+        private void OnFireInput(InputAction.CallbackContext context)
+        {
+            IsFireInput = context.ReadValueAsButton();
         }
     }
 }

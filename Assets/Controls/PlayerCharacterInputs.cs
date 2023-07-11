@@ -35,6 +35,15 @@ public partial class @PlayerCharacterInputs : IInputActionCollection2, IDisposab
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Fire"",
+                    ""type"": ""Button"",
+                    ""id"": ""fe5f6f4a-cdd3-4f0a-9e21-82e0fd55dd47"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -147,6 +156,28 @@ public partial class @PlayerCharacterInputs : IInputActionCollection2, IDisposab
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e0c06667-f41c-4369-b11f-200180f88c34"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0e559bab-082d-46d9-9026-1b1edecf5848"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gaympad"",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -179,6 +210,7 @@ public partial class @PlayerCharacterInputs : IInputActionCollection2, IDisposab
         // Character
         m_Character = asset.FindActionMap("Character", throwIfNotFound: true);
         m_Character_Move = m_Character.FindAction("Move", throwIfNotFound: true);
+        m_Character_Fire = m_Character.FindAction("Fire", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -239,11 +271,13 @@ public partial class @PlayerCharacterInputs : IInputActionCollection2, IDisposab
     private readonly InputActionMap m_Character;
     private ICharacterActions m_CharacterActionsCallbackInterface;
     private readonly InputAction m_Character_Move;
+    private readonly InputAction m_Character_Fire;
     public struct CharacterActions
     {
         private @PlayerCharacterInputs m_Wrapper;
         public CharacterActions(@PlayerCharacterInputs wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Character_Move;
+        public InputAction @Fire => m_Wrapper.m_Character_Fire;
         public InputActionMap Get() { return m_Wrapper.m_Character; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -256,6 +290,9 @@ public partial class @PlayerCharacterInputs : IInputActionCollection2, IDisposab
                 @Move.started -= m_Wrapper.m_CharacterActionsCallbackInterface.OnMove;
                 @Move.performed -= m_Wrapper.m_CharacterActionsCallbackInterface.OnMove;
                 @Move.canceled -= m_Wrapper.m_CharacterActionsCallbackInterface.OnMove;
+                @Fire.started -= m_Wrapper.m_CharacterActionsCallbackInterface.OnFire;
+                @Fire.performed -= m_Wrapper.m_CharacterActionsCallbackInterface.OnFire;
+                @Fire.canceled -= m_Wrapper.m_CharacterActionsCallbackInterface.OnFire;
             }
             m_Wrapper.m_CharacterActionsCallbackInterface = instance;
             if (instance != null)
@@ -263,6 +300,9 @@ public partial class @PlayerCharacterInputs : IInputActionCollection2, IDisposab
                 @Move.started += instance.OnMove;
                 @Move.performed += instance.OnMove;
                 @Move.canceled += instance.OnMove;
+                @Fire.started += instance.OnFire;
+                @Fire.performed += instance.OnFire;
+                @Fire.canceled += instance.OnFire;
             }
         }
     }
@@ -288,5 +328,6 @@ public partial class @PlayerCharacterInputs : IInputActionCollection2, IDisposab
     public interface ICharacterActions
     {
         void OnMove(InputAction.CallbackContext context);
+        void OnFire(InputAction.CallbackContext context);
     }
 }

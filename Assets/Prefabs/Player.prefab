@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 911910799547492192}
   m_Layer: 0
-  m_Name: Health
+  m_Name: HealthSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -67,7 +67,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4744106324220327681}
-  - {fileID: 7844278991461371798}
+  - {fileID: 8724700955733094299}
+  - {fileID: 6227365817289561654}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -101,7 +102,7 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
@@ -153,7 +154,7 @@ MonoBehaviour:
   SyncPositionZ: 0
   SyncRotAngleX: 0
   SyncRotAngleY: 0
-  SyncRotAngleZ: 0
+  SyncRotAngleZ: 1
   SyncScaleX: 0
   SyncScaleY: 0
   SyncScaleZ: 0
@@ -177,9 +178,17 @@ MonoBehaviour:
   moveController:
     playerRigidbody: {fileID: 2750356387565749401}
     speed: 7.5
+  fireController:
+    networkOwner: {fileID: 901903052235789942}
+    playerCollider: {fileID: 2750356387565749402}
+    firePosition: {fileID: 6227365817289561654}
+    projectilePrefab: {fileID: 2047097986660538136, guid: 8582183e4b4dd384193df14fa178573b, type: 3}
+    timeBetweenShots: 0.25
   healthController:
-    maxHealth: 100
-    healthBar: {fileID: 911910799547492192}
+    <MaxHealth>k__BackingField: 100
+  healthView:
+    healthBarHandler: {fileID: 8724700955733094299}
+    healthSlider: {fileID: 911910799547492192}
   colorController:
     body: {fileID: 4617403841067107976}
     healthBar: {fileID: 1143971865210785930}
@@ -215,8 +224,8 @@ Transform:
   m_Children:
   - {fileID: 4265944139926803475}
   - {fileID: 911910799547492192}
-  m_Father: {fileID: 2750356387565755237}
-  m_RootOrder: 1
+  m_Father: {fileID: 8724700955733094299}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2918836419671916445
 GameObject:
@@ -555,6 +564,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &6801632003908898660
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6227365817289561654}
+  m_Layer: 0
+  m_Name: FirePosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6227365817289561654
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6801632003908898660}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2750356387565755237}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7942931837124907682
 GameObject:
   m_ObjectHideFlags: 0
@@ -727,6 +767,38 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &8960361811160688841
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8724700955733094299}
+  m_Layer: 0
+  m_Name: HealthBarHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8724700955733094299
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8960361811160688841}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7844278991461371798}
+  m_Father: {fileID: 2750356387565755237}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9146500055030232817
 GameObject:
   m_ObjectHideFlags: 0

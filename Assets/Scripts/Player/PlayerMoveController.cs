@@ -16,13 +16,30 @@ namespace Player
 
         public void UpdatePosition(float time)
         {
-            var distance = speed * time;
-            var direction = _input * distance;
-            var newPosition = playerRigidbody.position + direction;
-
-            playerRigidbody.MovePosition(newPosition);
+            Move(time);
+            Rotate();
         }
 
         public void UpdateInput(Vector2 input) => _input = input;
+
+        private void Rotate()
+        {
+            if (_input == Vector2.zero)
+            {
+                return;
+            }
+
+            var zRotation = (Mathf.Atan2(-_input.x, _input.y) * Mathf.Rad2Deg);
+            playerRigidbody.transform.rotation = Quaternion.Euler(0, 0, zRotation);
+        }
+
+        private void Move(float time)
+        {
+            var distance = speed * time;
+            var delta = _input * distance;
+            var newPosition = playerRigidbody.position + delta;
+
+            playerRigidbody.MovePosition(newPosition);
+        }
     }
 }
