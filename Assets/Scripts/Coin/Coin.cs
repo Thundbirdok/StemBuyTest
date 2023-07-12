@@ -1,4 +1,3 @@
-
 namespace Coin
 {
     using Player;
@@ -7,8 +6,25 @@ namespace Coin
 
     public class Coin : NetworkBehaviour
     {
+        [SerializeField]
+        private ushort coinValue = 1;
+
+        private bool _isDestroyed;
+
+        public override void OnNetworkSpawn()
+        {
+            base.OnNetworkSpawn();
+
+            _isDestroyed = false;
+        }
+
         private void OnTriggerEnter2D(Collider2D other)
         {
+            if (_isDestroyed)
+            {
+                return;
+            }
+            
             if (other.TryGetComponent(out PlayerCharacterController player) == false)
             {
                 return;
@@ -18,10 +34,12 @@ namespace Coin
             {
                 return;
             }
+
+            _isDestroyed = true;
             
             NetworkObject.Despawn();
             
-            player.AddCoin();
+            player.AddCoin(coinValue);
         }
     }
 }

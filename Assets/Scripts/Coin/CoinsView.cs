@@ -28,18 +28,18 @@ namespace Coin
         {
             PlayerCharacterController.OnPlayerSpawned -= Enable;
             
-            PlayerCharacterController.Singleton.OnCoinsChanged += SetCoinsText;
+            PlayerCharacterController.Singleton.CoinsController.OnCoinsChanged += SetCoinsText;
             SetCoinsText();
         }
 
         private void Disable()
         {
-            PlayerCharacterController.Singleton.OnCoinsChanged -= SetCoinsText;
+            PlayerCharacterController.Singleton.CoinsController.OnCoinsChanged -= SetCoinsText;
         }
         
         private void SetCoinsText()
         {
-            text.text = PlayerCharacterController.Singleton.Coins.ToString();
+            text.text = PlayerCharacterController.Singleton.CoinsController.Coins.ToString();
         }
     }
 }

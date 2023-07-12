@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 901903052235789942}
   - component: {fileID: 3135138102162780910}
   - component: {fileID: 2954945947933733913}
+  - component: {fileID: 2476086121845712231}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -185,6 +186,8 @@ MonoBehaviour:
     timeBetweenShots: 0.25
   <HealthController>k__BackingField:
     <MaxHealth>k__BackingField: 100
+  <CoinsController>k__BackingField:
+    coinsWrapper: {fileID: 2476086121845712231}
   healthView:
     healthBarHandler: {fileID: 8724700955733094299}
     healthSlider: {fileID: 911910799547492192}
@@ -193,6 +196,18 @@ MonoBehaviour:
     healthBar: {fileID: 1143971865210785930}
     ownedColor: {r: 0.17254902, g: 0.4627451, b: 0.8980392, a: 1}
     unownedColor: {r: 0.8490566, g: 0.16420433, b: 0.16420433, a: 1}
+--- !u!114 &2476086121845712231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2750356387565755236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8a4b762eba497049bdb6bf2e6bd6d64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2855995691527439926
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 namespace Player
 {
     using System;
+    using Coin;
     using Health;
     using Projectile;
     using Unity.Netcode;
@@ -9,40 +10,23 @@ namespace Player
     public class PlayerCharacterController : NetworkBehaviour, ITakeDamage, IStopProjectile
     {
         public static event Action OnPlayerSpawned;
-        public event Action OnCoinsChanged;
 
         public static PlayerCharacterController Singleton;
-        
-        private ushort _coins;
-        public ushort Coins
-        {
-            get
-            {
-                return _coins;
-            }
 
-            private set
-            {
-                if (_coins == value)
-                {
-                    return;
-                }
-
-                _coins = value;
-                
-                OnCoinsChanged?.Invoke();
-            }
-        }
-        
         [SerializeField]
         private PlayerMoveController moveController;
 
         [SerializeField]
         private FireController fireController;
-        
+
         [field: SerializeField]
         public HealthController HealthController { get; private set; }
 
+        [field: SerializeField]
+        public CoinsController CoinsController { get; private set; }
+
+        private NetworkVariable<ushort> _coins = new NetworkVariable<ushort>(0);
+        
         [SerializeField]
         private HealthSpriteRendererView healthView;
         
@@ -57,9 +41,12 @@ namespace Player
             
             colorController.Paint(IsOwner);
             HealthController.Enable();
+            CoinsController.Enable();
             
             healthView.Initialize(HealthController);
             healthView.Enable();
+
+            _coins.OnValueChanged += InvokeOnCoinsChanged;
             
             if (IsOwner == false)
             {
@@ -77,11 +64,20 @@ namespace Player
             _inputHandler.OnFireInputChanged += UpdateFireInput;
         }
 
+        private void InvokeOnCoinsChanged(ushort previousvalue, ushort newvalue)
+        {
+            if (IsServer == false)
+            {
+                Debug.Log(newvalue);
+            }
+        }
+
         public override void OnNetworkDespawn()
         {
             base.OnNetworkDespawn();
 
             HealthController.Disable();
+            CoinsController.Disable();
             healthView.Disable();
             
             if (IsOwner  == false)
@@ -111,9 +107,10 @@ namespace Player
         
         private void UpdateFireInput() => fireController.UpdateFireInput(_inputHandler.IsFireInput);
 
-        public void AddCoin()
+        public void AddCoin(ushort amount)
         {
-            Coins += 1;
+            CoinsController.Add(amount);
+            _coins.Value += amount;
         }
     }
 }
