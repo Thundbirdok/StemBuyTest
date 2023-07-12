@@ -100,6 +100,11 @@ namespace Player
 
         private void FixedUpdate()
         {
+            if (IsServer == false)
+            {
+                return;
+            }
+            
             moveController.UpdatePosition(Time.fixedDeltaTime);
             fireController.UpdateFire(Time.fixedDeltaTime, transform.up);
         }
@@ -109,10 +114,16 @@ namespace Player
             HealthController.TakeDamage(damage);
         }
         
-        private void UpdateMoveInput() => moveController.UpdateInput(_inputHandler.MoveInput);
+        private void UpdateMoveInput() => UpdateMoveInputServerRpc(_inputHandler.MoveInput);
         
-        private void UpdateFireInput() => fireController.UpdateFireInput(_inputHandler.IsFireInput);
+        [ServerRpc]
+        private void UpdateMoveInputServerRpc(Vector2 input) => moveController.UpdateInput(input);
+        
+        private void UpdateFireInput() => UpdateFireInputServerRpc(_inputHandler.IsFireInput);
 
+        [ServerRpc]
+        private void UpdateFireInputServerRpc(bool isFireInput) => fireController.UpdateFireInput(isFireInput);
+        
         public void AddCoin(ushort amount) => CoinsHandler.Add(amount);
 
         private void OnDeath()

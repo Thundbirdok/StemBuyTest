@@ -41,13 +41,12 @@ namespace Player.Fire
                 return;
             }
 
-            InstantiateProjectileServerRpc(direction);
+            InstantiateProjectile(direction);
 
             _time = timeBetweenShots;
         }
         
-        [ServerRpc]
-        private void InstantiateProjectileServerRpc(Vector2 direction)
+        private void InstantiateProjectile(Vector2 direction)
         {
             var networkObject = NetworkObjectPool.Singleton.GetNetworkObject
             (
