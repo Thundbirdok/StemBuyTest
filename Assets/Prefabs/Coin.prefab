@@ -139,6 +139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d69a4fa28cff0449ab8f92e156dfb5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  coinValue: 1
 --- !u!114 &4786967028289295852
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,7 +181,7 @@ MonoBehaviour:
   RotAngleThreshold: 0.01
   ScaleThreshold: 0.01
   InLocalSpace: 0
-  Interpolate: 1
+  Interpolate: 0
 --- !u!114 &4786967028289295854
 MonoBehaviour:
   m_ObjectHideFlags: 0

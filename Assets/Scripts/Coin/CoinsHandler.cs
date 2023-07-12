@@ -1,26 +1,24 @@
 namespace Coin
 {
     using System;
-    using UnityEngine;
+    using Unity.Netcode;
 
-    [Serializable]
-    public class CoinsController
+    public class CoinsHandler : NetworkBehaviour
     {
         public event Action OnCoinsChanged;
         
-        public ushort Coins => coinsWrapper.Coins.Value;
+        public ushort Coins => _coinsVariable.Value;
 
-        [SerializeField]
-        private CoinsNetworkVariableWrapper coinsWrapper;
+        private readonly NetworkVariable<ushort> _coinsVariable = new NetworkVariable<ushort>();
 
         public void Enable()
         {
-            coinsWrapper.Coins.OnValueChanged += InvokeOnCoinsChanged;
+            _coinsVariable.OnValueChanged += InvokeOnCoinsChanged;
         }
 
         public void Disable()
         {
-            coinsWrapper.Coins.OnValueChanged -= InvokeOnCoinsChanged;
+            _coinsVariable.OnValueChanged -= InvokeOnCoinsChanged;
         }
 
         public void Add(ushort coins)
@@ -30,7 +28,7 @@ namespace Coin
                 return;
             }
 
-            coinsWrapper.Coins.Value += coins;
+            _coinsVariable.Value += coins;
         }
 
         private void InvokeOnCoinsChanged(ushort _1, ushort _2)

@@ -28,19 +28,24 @@ namespace Projectile
             body.MovePosition(newPosition);
         }
 
-        private void OnCollisionEnter2D(Collision2D other)
+        private void OnTriggerEnter2D(Collider2D other)
         {
+            if (IsServer == false)
+            {
+                return;
+            }
+            
             if (_isDestroyed)
             {
                 return;
             }
             
-            if (other.collider.TryGetComponent(out ITakeDamage takeDamage))
+            if (other.TryGetComponent(out ITakeDamage takeDamage))
             {
                 takeDamage.TakeDamage(damage);
             }
 
-            if (other.collider.TryGetComponent(out IStopProjectile _))
+            if (other.TryGetComponent(out IStopProjectile _))
             {
                 NetworkObject.Despawn();
 

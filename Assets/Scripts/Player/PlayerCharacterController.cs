@@ -3,10 +3,17 @@ namespace Player
     using System;
     using Coin;
     using Health;
+    using Player.Fire;
     using Projectile;
     using Unity.Netcode;
     using UnityEngine;
 
+    [RequireComponent
+    (
+        typeof(FireController),
+        typeof(HealthController),
+        typeof(CoinsHandler)
+    )]
     public class PlayerCharacterController : NetworkBehaviour, ITakeDamage, IStopProjectile
     {
         public static event Action OnPlayerSpawned;
@@ -23,7 +30,7 @@ namespace Player
         public HealthController HealthController { get; private set; }
 
         [field: SerializeField]
-        public CoinsController CoinsController { get; private set; }
+        public CoinsHandler CoinsHandler { get; private set; }
 
         [SerializeField]
         private HealthSpriteRendererView healthView;
@@ -33,13 +40,20 @@ namespace Player
         
         private InputHandler _inputHandler;
 
+        private void Reset()
+        {
+            fireController = GetComponent<FireController>();
+            HealthController = GetComponent<HealthController>();
+            CoinsHandler = GetComponent<CoinsHandler>();
+        }
+
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
             
             colorController.Paint(IsOwner);
             HealthController.Enable();
-            CoinsController.Enable();
+            CoinsHandler.Enable();
 
             HealthController.OnDeath += OnDeath;
             
@@ -67,7 +81,7 @@ namespace Player
             base.OnNetworkDespawn();
 
             HealthController.Disable();
-            CoinsController.Disable();
+            CoinsHandler.Disable();
             healthView.Disable();
             
             HealthController.OnDeath -= OnDeath;
@@ -99,7 +113,7 @@ namespace Player
         
         private void UpdateFireInput() => fireController.UpdateFireInput(_inputHandler.IsFireInput);
 
-        public void AddCoin(ushort amount) => CoinsController.Add(amount);
+        public void AddCoin(ushort amount) => CoinsHandler.Add(amount);
 
         private void OnDeath()
         {

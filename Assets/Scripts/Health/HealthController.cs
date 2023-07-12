@@ -3,33 +3,29 @@ namespace Health
     using System;
     using Unity.Netcode;
     using UnityEngine;
-
-    [Serializable]
-    public class HealthController
+    
+    public class HealthController : NetworkBehaviour
     {
         public event Action OnHealthChanged;
         public event Action OnDeath;
         
-        public ushort Health => HealthVariable.Value;
+        public ushort Health => _healthVariable.Value;
 
-        [SerializeField]
-        private HealthNetworkVariableWrapper healthWrapper;
+        private readonly NetworkVariable<ushort> _healthVariable = new NetworkVariable<ushort>();
         
         [field: SerializeField]
         public ushort MaxHealth { get; private set; }
 
-        private NetworkVariable<ushort> HealthVariable => healthWrapper.Health;
-        
         public void Enable()
         {
-            HealthVariable.OnValueChanged += InvokeOnHealthChanged;
+            _healthVariable.OnValueChanged += InvokeOnHealthChanged;
             
-            HealthVariable.Value = MaxHealth;
+            _healthVariable.Value = MaxHealth;
         }
 
         public void Disable()
         {
-            HealthVariable.OnValueChanged -= InvokeOnHealthChanged;
+            _healthVariable.OnValueChanged -= InvokeOnHealthChanged;
         }
 
         public void TakeDamage(int damage)
@@ -39,7 +35,7 @@ namespace Health
                 return;
             }
             
-            HealthVariable.Value = (ushort)Mathf.Max(Health - damage, 0);
+            _healthVariable.Value = (ushort)Mathf.Max(Health - damage, 0);
 
             if (Health == 0)
             {

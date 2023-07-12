@@ -1,12 +1,11 @@
-namespace Player
+namespace Player.Fire
 {
-    using System;
     using Network;
     using Projectile;
+    using Unity.Netcode;
     using UnityEngine;
 
-    [Serializable]
-    public class FireController
+    public class FireController : NetworkBehaviour
     {
         [SerializeField]
         private Collider2D playerCollider;
@@ -42,12 +41,13 @@ namespace Player
                 return;
             }
 
-            InstantiateProjectile(direction);
+            InstantiateProjectileServerRpc(direction);
 
             _time = timeBetweenShots;
         }
         
-        private void InstantiateProjectile(Vector2 direction)
+        [ServerRpc]
+        private void InstantiateProjectileServerRpc(Vector2 direction)
         {
             var networkObject = NetworkObjectPool.Singleton.GetNetworkObject
             (
