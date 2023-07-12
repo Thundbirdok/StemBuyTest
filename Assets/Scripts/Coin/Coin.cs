@@ -20,17 +20,17 @@ namespace Coin
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (_isDestroyed)
-            {
-                return;
-            }
-            
-            if (other.TryGetComponent(out PlayerCharacterController player) == false)
+            if (NetworkManager.Singleton.IsServer == false)
             {
                 return;
             }
 
-            if (NetworkManager.Singleton.IsServer == false)
+            if (_isDestroyed)
+            {
+                return;
+            }
+
+            if (other.TryGetComponent(out PlayerCharacterController player) == false)
             {
                 return;
             }

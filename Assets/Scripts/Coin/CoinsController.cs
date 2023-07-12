@@ -11,7 +11,7 @@ namespace Coin
         public ushort Coins => coinsWrapper.Coins.Value;
 
         [SerializeField]
-        private CoinsControllerNetworkBehaviourWrapper coinsWrapper;
+        private CoinsNetworkVariableWrapper coinsWrapper;
 
         public void Enable()
         {

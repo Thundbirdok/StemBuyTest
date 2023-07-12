@@ -25,8 +25,6 @@ namespace Player
         [field: SerializeField]
         public CoinsController CoinsController { get; private set; }
 
-        private NetworkVariable<ushort> _coins = new NetworkVariable<ushort>(0);
-        
         [SerializeField]
         private HealthSpriteRendererView healthView;
         
@@ -42,12 +40,12 @@ namespace Player
             colorController.Paint(IsOwner);
             HealthController.Enable();
             CoinsController.Enable();
+
+            HealthController.OnDeath += OnDeath;
             
             healthView.Initialize(HealthController);
             healthView.Enable();
 
-            _coins.OnValueChanged += InvokeOnCoinsChanged;
-            
             if (IsOwner == false)
             {
                 return;
@@ -64,14 +62,6 @@ namespace Player
             _inputHandler.OnFireInputChanged += UpdateFireInput;
         }
 
-        private void InvokeOnCoinsChanged(ushort previousvalue, ushort newvalue)
-        {
-            if (IsServer == false)
-            {
-                Debug.Log(newvalue);
-            }
-        }
-
         public override void OnNetworkDespawn()
         {
             base.OnNetworkDespawn();
@@ -80,7 +70,9 @@ namespace Player
             CoinsController.Disable();
             healthView.Disable();
             
-            if (IsOwner  == false)
+            HealthController.OnDeath -= OnDeath;
+            
+            if (IsOwner == false)
             {
                 return;
             }
@@ -107,10 +99,16 @@ namespace Player
         
         private void UpdateFireInput() => fireController.UpdateFireInput(_inputHandler.IsFireInput);
 
-        public void AddCoin(ushort amount)
+        public void AddCoin(ushort amount) => CoinsController.Add(amount);
+
+        private void OnDeath()
         {
-            CoinsController.Add(amount);
-            _coins.Value += amount;
+            if (IsServer == false)
+            {
+                return;
+            }
+            
+            NetworkObject.Despawn();
         }
     }
 }

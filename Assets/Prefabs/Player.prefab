@@ -48,6 +48,7 @@ GameObject:
   - component: {fileID: 3135138102162780910}
   - component: {fileID: 2954945947933733913}
   - component: {fileID: 2476086121845712231}
+  - component: {fileID: 81271145280580451}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -185,6 +186,7 @@ MonoBehaviour:
     projectilePrefab: {fileID: 2047097986660538136, guid: 8582183e4b4dd384193df14fa178573b, type: 3}
     timeBetweenShots: 0.25
   <HealthController>k__BackingField:
+    healthWrapper: {fileID: 81271145280580451}
     <MaxHealth>k__BackingField: 100
   <CoinsController>k__BackingField:
     coinsWrapper: {fileID: 2476086121845712231}
@@ -206,6 +208,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d8a4b762eba497049bdb6bf2e6bd6d64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &81271145280580451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2750356387565755236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d9cadc0e8d8be140a3d819c23caa32c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2855995691527439926
