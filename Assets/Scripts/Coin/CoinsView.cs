@@ -34,6 +34,11 @@ namespace Coin
 
         private void Disable()
         {
+            if (PlayerCharacterController.Singleton == null)
+            {
+                return;
+            }
+            
             PlayerCharacterController.Singleton.CoinsHandler.OnCoinsChanged -= SetCoinsText;
         }
         

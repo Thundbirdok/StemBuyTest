@@ -1,10 +1,9 @@
-using UnityEngine;
-
 namespace Coin
 {
-    using System.Collections;
     using Network;
+    using UnityEngine;
     using Unity.Netcode;
+    using System.Collections;
     using Random = UnityEngine.Random;
 
     public class CoinsSpawner : MonoBehaviour
@@ -36,6 +35,7 @@ namespace Coin
         private void Start()
         {
             NetworkManager.Singleton.OnClientConnectedCallback += OnPlayerConnected;
+            NetworkManager.Singleton.OnClientDisconnectCallback += OnPlayerDisconnected;
         }
 
         private void OnDestroy()
@@ -52,6 +52,7 @@ namespace Coin
             }
             
             NetworkManager.Singleton.OnClientConnectedCallback -= OnPlayerConnected;
+            NetworkManager.Singleton.OnClientDisconnectCallback -= OnPlayerDisconnected;
         }
 
         private void OnPlayerConnected(ulong _)
@@ -68,13 +69,15 @@ namespace Coin
                 return;
             }
 
-            if (NetworkObjectPool.Singleton.NetworkObject.IsSpawned == false)
-            {
-                NetworkObjectPool.Singleton.NetworkObject.Spawn();
-            }
+            // if (NetworkObjectPool.Singleton.NetworkObject.IsSpawned == false)
+            // {
+            //     NetworkObjectPool.Singleton.NetworkObject.Spawn(true);
+            // }
 
             SpawnCoins();
         }
+
+        private void OnPlayerDisconnected(ulong _) => _playersAmount--;
 
         private void SpawnCoins()
         {
