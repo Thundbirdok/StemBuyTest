@@ -16,8 +16,10 @@ namespace Player
     )]
     public class PlayerCharacterController : NetworkBehaviour, ITakeDamage, IStopProjectile
     {
-        public static event Action OnPlayerSpawned;
+        public static event Action OnControlledPlayerSpawned;
 
+        public static event Action<PlayerCharacterController> OnPlayerSpawned;
+        
         public static PlayerCharacterController Singleton;
 
         [SerializeField]
@@ -52,7 +54,10 @@ namespace Player
             base.OnNetworkSpawn();
             
             colorController.Paint(IsOwner);
+            
+            HealthController.Initialize(this);
             HealthController.Enable();
+            
             CoinsHandler.Enable();
 
             HealthController.OnDeath += OnDeath;
@@ -60,13 +65,15 @@ namespace Player
             healthView.Initialize(HealthController);
             healthView.Enable();
 
+            OnPlayerSpawned?.Invoke(this);
+            
             if (IsOwner == false)
             {
                 return;
             }
 
             Singleton = this;   
-            OnPlayerSpawned?.Invoke();
+            OnControlledPlayerSpawned?.Invoke();
             
             _inputHandler = new InputHandler();
             
@@ -79,7 +86,7 @@ namespace Player
         public override void OnNetworkDespawn()
         {
             base.OnNetworkDespawn();
-
+            
             HealthController.Disable();
             CoinsHandler.Disable();
             healthView.Disable();
@@ -92,6 +99,7 @@ namespace Player
             }
 
             _inputHandler.OnMoveInputChanged -= UpdateMoveInput;
+            _inputHandler.OnFireInputChanged -= UpdateFireInput;
             
             _inputHandler.Disable();
         }
@@ -126,14 +134,17 @@ namespace Player
         
         public void AddCoin(ushort amount) => CoinsHandler.Add(amount);
 
-        private void OnDeath()
+        private void OnDeath(PlayerCharacterController player)
         {
-            if (IsServer == false)
+            if (IsOwner == false)
             {
                 return;
             }
+
+            _inputHandler.OnMoveInputChanged -= UpdateMoveInput;
+            _inputHandler.OnFireInputChanged -= UpdateFireInput;
             
-            NetworkObject.Despawn();
+            _inputHandler.Disable();
         }
     }
 }

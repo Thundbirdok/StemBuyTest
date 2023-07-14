@@ -14,7 +14,7 @@ namespace Coin
         {
             if (PlayerCharacterController.Singleton == null)
             {
-                PlayerCharacterController.OnPlayerSpawned += Enable;
+                PlayerCharacterController.OnControlledPlayerSpawned += Enable;
                 
                 return;
             }
@@ -26,7 +26,7 @@ namespace Coin
 
         private void Enable()
         {
-            PlayerCharacterController.OnPlayerSpawned -= Enable;
+            PlayerCharacterController.OnControlledPlayerSpawned -= Enable;
             
             PlayerCharacterController.Singleton.CoinsHandler.OnCoinsChanged += SetCoinsText;
             SetCoinsText();

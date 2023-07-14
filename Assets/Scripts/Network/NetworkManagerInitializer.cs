@@ -19,7 +19,7 @@ namespace Network
         [SerializeField]
         private ConnectionController connectionController;
         
-        public void Start()
+        private void Start()
         {
             if (UnityServices.State == ServicesInitializationState.Uninitialized)
             {
@@ -38,11 +38,19 @@ namespace Network
             JoinGame();
         }
 
-        public void OnDestroy()
+        private void OnDestroy()
         {
             connectionController.Disable();
         }
 
+        public void Shutdown()
+        {
+            Debug.Log("Shutdown connection");
+            
+            networkManager.Shutdown();
+            Destroy(networkManager.gameObject);
+        }
+        
         private void StartGame()
         {
             try

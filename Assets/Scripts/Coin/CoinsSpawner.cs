@@ -102,6 +102,11 @@ namespace Coin
             while (enabled)
             {
                 yield return delay;
+
+                if (NetworkManager.Singleton)
+                {
+                    yield break;
+                }
                 
                 SpawnCoin();
             }

@@ -1,13 +1,14 @@
 namespace Health
 {
     using System;
+    using Player;
     using Unity.Netcode;
     using UnityEngine;
     
     public class HealthController : NetworkBehaviour
     {
         public event Action OnHealthChanged;
-        public event Action OnDeath;
+        public event Action<PlayerCharacterController> OnDeath;
         
         public ushort Health => _healthVariable.Value;
 
@@ -15,6 +16,10 @@ namespace Health
         
         [field: SerializeField]
         public ushort MaxHealth { get; private set; }
+
+        private PlayerCharacterController _player;
+        
+        public void Initialize(PlayerCharacterController player) => _player = player;
 
         public void Enable()
         {
@@ -36,16 +41,20 @@ namespace Health
             }
             
             _healthVariable.Value = (ushort)Mathf.Max(Health - damage, 0);
-
-            if (Health == 0)
-            {
-                OnDeath?.Invoke();
-            }
         }
 
         private void InvokeOnHealthChanged(ushort _1, ushort _2)
         {
             OnHealthChanged?.Invoke();
+
+            if (Health > 0)
+            {
+                return;
+            }
+
+            Debug.Log("Player died: " + _player.NetworkObject.OwnerClientId);
+                
+            OnDeath?.Invoke(_player);
         }
     }
 }

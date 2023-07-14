@@ -14,7 +14,7 @@ namespace Health
         {
             if (PlayerCharacterController.Singleton == null)
             {
-                PlayerCharacterController.OnPlayerSpawned += Enable;
+                PlayerCharacterController.OnControlledPlayerSpawned += Enable;
                 
                 return;
             }
@@ -26,7 +26,7 @@ namespace Health
 
         private void Enable()
         {
-            PlayerCharacterController.OnPlayerSpawned -= Enable;
+            PlayerCharacterController.OnControlledPlayerSpawned -= Enable;
             
             PlayerCharacterController.Singleton.HealthController.OnHealthChanged += SetHealthText;
             SetHealthText();

@@ -152,9 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26574fc3cf516b547a23c3a785d55864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  networkInitializer: {fileID: 0}
   lobbyHeartbeatDelay: 15
-  updateLobbyDelay: 5
+  updateLobbyDelay: 1.5
   maxPlayers: 2
 --- !u!4 &164837595
 Transform:
