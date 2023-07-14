@@ -3,18 +3,41 @@ using UnityEngine;
 namespace Lobby
 {
     using System;
+    using System.Collections.Generic;
+    using Network;
+    using Relay;
+    using ScenesManagement;
     using Unity.Services.Authentication;
     using Unity.Services.Lobbies;
     using Unity.Services.Lobbies.Models;
+    using Unity.Services.Relay;
 
     public class LobbiesController : MonoBehaviour
     {
         public event Action OnHostLobbyStatusChange;
 
-        public Lobby HostLobby { get; private set; }
+        private Lobby _hostLobby;
+        public Lobby HostLobby
+        {
+            get
+            {
+                return _hostLobby;
+            }
+
+            private set
+            {
+                if (_hostLobby == value)
+                {
+                    return;
+                }
+
+                _hostLobby = value;
+                OnHostLobbyStatusChange?.Invoke();
+            }
+        }
 
         public Lobby JoinedLobby { get; private set; }
-        
+
         [SerializeField]
         private float lobbyHeartbeatDelay = 15f;
 
@@ -24,9 +47,14 @@ namespace Lobby
         [SerializeField]
         private int maxPlayers = 2;
 
+        private const string KEY_START_GAME = "KeyStartGame";
+        private const string GAME_SCENE_NAME = "Game";
+        
         private float _heartbeatTime;
 
         private float _updateLobbyTime;
+
+        private bool _isStartingGame;
         
         private void Update()
         {
@@ -38,7 +66,26 @@ namespace Lobby
         {
             try
             {
-                var lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers);
+                var options = new CreateLobbyOptions
+                {
+                    Data = new Dictionary<string, DataObject>
+                    {
+                        {
+                            KEY_START_GAME, new DataObject
+                            (
+                                DataObject.VisibilityOptions.Member,
+                                "0"
+                            )
+                        }
+                    }
+                };
+                
+                var lobby = await LobbyService.Instance.CreateLobbyAsync
+                (
+                    lobbyName,
+                    maxPlayers,
+                    options
+                );
 
                 HostLobby = lobby;
                 JoinedLobby = lobby;
@@ -59,7 +106,7 @@ namespace Lobby
                 return;
             }
 
-            await Lobbies.Instance.JoinLobbyByIdAsync(lobby.Id);
+            JoinedLobby = await Lobbies.Instance.JoinLobbyByIdAsync(lobby.Id);
         }
 
         public async void QuickJoin()
@@ -111,7 +158,39 @@ namespace Lobby
 
             _updateLobbyTime = updateLobbyDelay;
 
-            await LobbyService.Instance.GetLobbyAsync(JoinedLobby.Id);
+            JoinedLobby = await LobbyService.Instance.GetLobbyAsync(JoinedLobby.Id);
+
+            if (HostLobby != null)
+            {
+                HostLobby = JoinedLobby;
+            
+                TryStartGame();
+            
+                return;
+            }
+
+            var joinCode = JoinedLobby.Data[KEY_START_GAME].Value;
+
+            if (joinCode == "0")
+            {
+                return;
+            }
+
+            JoinGame(joinCode);
+        }
+
+        private void JoinGame(string joinCode)
+        {
+            if (_isStartingGame)
+            {
+                return;
+            }
+
+            _isStartingGame = true;
+            
+            RelayHandler.Set(false, joinCode, null);
+
+            LoadGame();
         }
 
         private async void KeepLobbyHeartbeat()
@@ -131,6 +210,59 @@ namespace Lobby
             _heartbeatTime = lobbyHeartbeatDelay;
 
             await LobbyService.Instance.SendHeartbeatPingAsync(HostLobby.Id);
+        }
+
+        private async void TryStartGame()
+        {
+            try
+            {
+                if (HostLobby.Players.Count < maxPlayers)
+                {
+                    return;
+                }
+
+                if (_isStartingGame)
+                {
+                    return;
+                }
+
+                _isStartingGame = true;
+                
+                var allocation = await RelayService.Instance
+                    .CreateAllocationAsync(maxPlayers - 1);
+
+                var joinCode = await RelayService.Instance
+                    .GetJoinCodeAsync(allocation.AllocationId);
+
+                HostLobby = await Lobbies.Instance.UpdateLobbyAsync
+                (
+                    HostLobby.Id,
+                    new UpdateLobbyOptions
+                    {
+                        Data = new Dictionary<string, DataObject>
+                        {
+                            {
+                                KEY_START_GAME,
+                                new DataObject(DataObject.VisibilityOptions.Member, joinCode)
+                            }
+                        }
+                    }
+                );
+                
+                RelayHandler.Set(true, joinCode, allocation);
+                
+                LoadGame();
+            }
+            catch (LobbyServiceException exception)
+            {
+                Debug.Log(exception.Message);
+                Debug.Log(exception.StackTrace);
+            }
+        }
+
+        private static void LoadGame()
+        {
+            Loading.LoadScene(GAME_SCENE_NAME);
         }
     }
 }

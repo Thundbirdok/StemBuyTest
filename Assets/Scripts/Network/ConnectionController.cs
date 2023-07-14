@@ -1,9 +1,11 @@
 namespace Network
 {
+    using System;
     using Unity.Netcode;
     using UnityEngine;
     
-    public class ConnectionController : MonoBehaviour
+    [Serializable]
+    public class ConnectionController
     {
         [SerializeField]
         private int maxPlayers = 2;
@@ -11,12 +13,12 @@ namespace Network
         [SerializeField]
         private Transform[] spawnPoints;
 
-        private void Start()
+        public void Enable()
         {
             NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
         }
-        
-        private void OnDestroy()
+
+        public void Disable()
         {
             if (NetworkManager.Singleton == null)
             {

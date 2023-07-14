@@ -34,6 +34,11 @@ namespace Health
 
         private void Disable()
         {
+            if (PlayerCharacterController.Singleton == null)
+            {
+                return;   
+            }
+            
             PlayerCharacterController.Singleton.HealthController.OnHealthChanged -= SetHealthText;
         }
         

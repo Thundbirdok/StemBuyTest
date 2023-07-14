@@ -27,15 +27,18 @@ namespace Coin
         [SerializeField]
         private Vector2 offset;
 
-        [SerializeField]
-        private int playersToStart = 2;
-
-        private int _playersAmount;
         private Coroutine _spawnCoroutine;
         
         private void Start()
         {
-            NetworkManager.Singleton.OnClientConnectedCallback += OnPlayerConnected;
+            if (NetworkObjectPool.IsPrefabsRegistered)
+            {
+                Spawn();
+                
+                return;
+            }
+
+            NetworkObjectPool.OnPrefabsRegistered += Spawn;
         }
 
         private void OnDestroy()
@@ -46,31 +49,14 @@ namespace Coin
                 _spawnCoroutine = null;
             }
             
-            if (NetworkManager.Singleton == null)
-            {
-                return;
-            }
-            
-            NetworkManager.Singleton.OnClientConnectedCallback -= OnPlayerConnected;
+            NetworkObjectPool.OnPrefabsRegistered -= Spawn;
         }
 
-        private void OnPlayerConnected(ulong _)
+        private void Spawn()
         {
             if (NetworkManager.Singleton.IsServer == false)
             {
                 return;
-            }
-
-            _playersAmount++;
-
-            if (_playersAmount < playersToStart)
-            {
-                return;
-            }
-
-            if (NetworkObjectPool.Singleton.NetworkObject.IsSpawned == false)
-            {
-                NetworkObjectPool.Singleton.NetworkObject.Spawn();
             }
 
             SpawnCoins();
