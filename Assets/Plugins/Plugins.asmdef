@@ -1,0 +1,16 @@
+{
+    "name": "Plugins",
+    "rootNamespace": "",
+    "references": [
+        "GUID:894a6cc6ed5cd2645bb542978cbed6a9"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
